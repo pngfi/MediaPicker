@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_top_bar"
+        layout="@layout/kz_top_select_photo_bar" />
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:numColumns="3"
+        />
+
+
+    <View
+        android:id="@+id/pop_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/photo_selected_color"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/layout_photo_dir"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="-46dp"
+        android:background="@color/text_white">
+
+        <RelativeLayout
+            android:id="@+id/layout_show_popupwindow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_pure_white_to_grey_selector"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_photo_dir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="@string/photo"
+                android:textColor="@color/btn_yellow_text_color_selected"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tv_photo_dir"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/tv_photo_dir"
+                android:background="@drawable/ic_popupwindow_show" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_sure_big_photos"
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:background="@drawable/btn_yellow_selector"
+            android:gravity="center"
+            android:text="完成"
+            android:textColor="@color/txt_black_selector"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentTop="true"
+            android:background="#c5c5c5" />
+    </RelativeLayout>
+
+
+</LinearLayout>

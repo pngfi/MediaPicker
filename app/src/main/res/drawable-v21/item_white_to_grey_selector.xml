@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 通用-条目点击背景（白色->浅灰色） -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/item_bg_grey_ripple">
+  <item>
+    <shape android:shape="oval">
+      <solid android:color="@color/item_bg_grey_pressed"/>
+    </shape>
+  </item>
+  <item android:drawable="@color/white"/>
+</ripple>

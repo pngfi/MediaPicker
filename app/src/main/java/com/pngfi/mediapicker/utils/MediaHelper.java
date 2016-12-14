@@ -82,6 +82,7 @@ public class MediaHelper {
     Uri contentUri = Uri.fromFile(f);
     mediaScanIntent.setData(contentUri);
     mContext.sendBroadcast(mediaScanIntent);
+    
   }
 
 

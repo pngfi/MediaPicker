@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import com.pngfi.mediapicker.entity.Image;
 import com.pngfi.mediapicker.entity.ImageFolder;
@@ -23,11 +24,12 @@ import java.util.List;
 public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
+    private static final String TAG = "Scanner";
     //loadType
     public static final int LOAD_TYPE_IMG = 1;
     public static final int LOAD_TYPE_VIDEO = 2;
 
-    private FragmentActivity mContext;
+    private FragmentActivity context;
 
     /**
      * 可选值：LOAD_TYPE_IMG
@@ -53,12 +55,13 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
             MediaStore.Video.Media.DATA,
             MediaStore.Video.Media.SIZE,
             MediaStore.Video.Media.MIME_TYPE,
-            MediaStore.Video.Media.DATE_ADDED
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.DURATION
     };
 
     public Scanner(FragmentActivity activity, int loadType) {
         this.loadType = loadType;
-        mContext = activity;
+        context = activity;
         imageFolders = new ArrayList<>();
     }
 
@@ -68,16 +71,17 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
             throw new IllegalArgumentException("listener can't be null");
         }
         mListenter = listener;
-        mContext.getSupportLoaderManager().initLoader(loadType, null, this);
+        context.getSupportLoaderManager().initLoader(loadType, null, this);
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader cursorLoader = null;
         if (id == LOAD_TYPE_IMG) {
-            cursorLoader = new CursorLoader(mContext, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMG_PROJECTION, null, null, IMG_PROJECTION[3] + " DESC");
+            cursorLoader = new CursorLoader(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMG_PROJECTION, null, null, IMG_PROJECTION[3] + " DESC");
         } else if (loadType == LOAD_TYPE_VIDEO) {
-            cursorLoader = new CursorLoader(mContext, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, null, null, VIDEO_PROJECTION[3] + " DESC");
+            cursorLoader = new CursorLoader(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, null, null, VIDEO_PROJECTION[3] + " DESC");
         }
         return cursorLoader;
     }
@@ -87,7 +91,8 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
 
         if (data != null && data.getCount() > 0) {
             ArrayList<Image> allImages = new ArrayList<>();
-
+            //清除
+            imageFolders.clear();
             if (loadType == LOAD_TYPE_IMG) {
 
                 while (data.moveToNext()) {
@@ -119,21 +124,31 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
                     }
 
                 }
+
                 //构造所有图片的集合
                 ImageFolder allImagesFolder = new ImageFolder();
                 allImagesFolder.setName("所有图片");
                 allImagesFolder.setPath("/");
                 allImagesFolder.setCover(allImages.get(0));
                 allImagesFolder.setImages(allImages);
-                imageFolders.add(0, allImagesFolder);  //确保第一条是所有图片
+                imageFolders.add(0, allImagesFolder);
 
             } else if (loadType == LOAD_TYPE_VIDEO) {
 
 
             }
+
+            /**
+             * 这里执行close的原因：正常情况下，由于CursorLoader 内部的ContentObserver
+             * 会监测数据库的变化，当我们发送一个Intent.ACTION_MEDIA_SCANNER_SCAN_FILE
+             * 广播更新数据库时候(mediaHelper.providerAddMedia()),也就会引起数据库的重新查询。
+             * 关闭后即不会再查询
+             */
+            data.close();
+            mListenter.onLoadFinshed(imageFolders);
         }
 
-        mListenter.onLoadFinshed(imageFolders);
+
     }
 
 

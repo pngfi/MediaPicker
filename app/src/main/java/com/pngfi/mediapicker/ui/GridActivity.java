@@ -2,8 +2,12 @@ package com.pngfi.mediapicker.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +31,7 @@ import com.pngfi.mediapicker.utils.MediaHelper;
 import com.pngfi.mediapicker.utils.PermissionHelper;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +42,13 @@ import java.util.List;
 
 public class GridActivity extends BaseActivity implements View.OnClickListener {
 
+    public static final String EXTRA_KEY_CURRENT_FOLDER_LIST = "extra_key_current_folder_list";
+
+    public static final int REQUEST_CODE_IMAGE_PREVIEW = 100;
+
 
     public static final String TAG = "GridActivity";
     private GridView mGridView;
-    private ArrayList<Image> photos;
 
     private GridAdapter mPhotoGridAdapter;
     private ImageFolderAdapter mImageFolderAdapter;
@@ -48,8 +56,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     private FolderPopUpWindow mFolderPopupWindow;
     private TextView mTvBack;
     private TextView mTvTitle;
-    private ImageView mImgSelector;
-    private View mPopMask;
+
     private TextView mTvPhotoDir;
     private RelativeLayout mLayoutShowPopupwindow;
     private TextView mTvSureBigPhotos;
@@ -68,7 +75,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     private int selectLimit;
 
     private MediaHelper mediaHelper;
-    private String tag;
 
 
     @Override
@@ -94,7 +100,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                         mPhotoGridAdapter.refreshData(imageFolders.get(0).getImages());
                         mPhotoGridAdapter.setImageFolderPosition(0);
 
-                        mImageFolderAdapter = new ImageFolderAdapter(GridActivity.this, imageFolders);
+                        mImageFolderAdapter = new ImageFolderAdapter(GridActivity.this, mImageFolders);
                     }
                 });
             }
@@ -138,19 +144,11 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                         mSelected.add(media);
                     }
                 } else {
-                    mSelected.remove(media);
                     mask.setVisibility(View.GONE);
+                    mSelected.remove(media);
                 }
 
-                if (mSelected.size() > 0) {
-                    mTvSureBigPhotos.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", selectLimit + ""));
-                    mTvSureBigPhotos.setEnabled(true);
-                    mTvSureBigPhotos.setSelected(true);
-                } else {
-                    mTvSureBigPhotos.setSelected(false);
-                    mTvSureBigPhotos.setText(getString(R.string.btn_select));
-                    mTvSureBigPhotos.setEnabled(false);
-                }
+                changeTvFinish();
             }
         });
 
@@ -159,7 +157,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (showCamera && position == 0) {
+                if (mPhotoGridAdapter.showCamera() && position == 0) {
                     mPermissionHelper.requestPermissions(new PermissionHelper.PermissionListener() {
                         @Override
                         public void doAfterGrand(String... permission) {
@@ -171,14 +169,28 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
 
                         }
                     }, Manifest.permission.CAMERA);
-
                 } else {
-
+                    Intent intent = new Intent(GridActivity.this, ImagePreviewActivity.class);
+                    intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(mImageFolderAdapter.getSelectIndex()).getImages());
+                    intent.putExtra(ImagePicker.EXTRA_KEY_SELECTED, mSelected);
+                    int curPositon = mPhotoGridAdapter.showCamera() ? position - 1 : position;
+                    intent.putExtra(ImagePicker.EXTRAK_KEY_CURRENT_POSITION, curPositon);
+                    startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
                 }
             }
         });
+    }
 
-
+    private void changeTvFinish() {
+        if (mSelected.size() > 0) {
+            mTvSureBigPhotos.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", selectLimit + ""));
+            mTvSureBigPhotos.setEnabled(true);
+            mTvSureBigPhotos.setSelected(true);
+        } else {
+            mTvSureBigPhotos.setSelected(false);
+            mTvSureBigPhotos.setText(getString(R.string.btn_select));
+            mTvSureBigPhotos.setEnabled(false);
+        }
     }
 
 
@@ -205,6 +217,12 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 mainFolder.setCover(image);
                 mPhotoGridAdapter.notifyDataSetChanged();
             }
+        } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_CANCELED) {
+            ArrayList<Image> imageList = data.getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+            mSelected.clear();
+            mSelected.addAll(imageList);
+            mPhotoGridAdapter.notifyDataSetChanged();
+            changeTvFinish();
         }
     }
 
@@ -230,19 +248,17 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 mGridView.smoothScrollToPosition(0);//滑动到顶部
             }
         });
-        mFolderPopupWindow.setMargin(mLayoutShowPopupwindow.getHeight());
+        mFolderPopupWindow.setMargin(mLayoutPhotoDir.getHeight());
     }
 
 
     private void initView() {
         mTvBack = (TextView) findViewById(R.id.tv_back);
         mTvTitle = (TextView) findViewById(R.id.tv_show_title);
-        mImgSelector = (ImageView) findViewById(R.id.img_selector);
         mGridView = (GridView) findViewById(R.id.gridview);
-        mPopMask = findViewById(R.id.pop_mask);
         mTvPhotoDir = (TextView) findViewById(R.id.tv_photo_dir);
         mLayoutShowPopupwindow = (RelativeLayout) findViewById(R.id.layout_show_popupwindow);
-        mTvSureBigPhotos = (TextView) findViewById(R.id.tv_sure_big_photos);
+        mTvSureBigPhotos = (TextView) findViewById(R.id.tv_finish);
         mLayoutPhotoDir = (RelativeLayout) findViewById(R.id.layout_photo_dir);
     }
 
@@ -255,7 +271,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 //目前的代码可能有问题
                 createFolderPopupWindow();
 
-                Log.i(TAG,mFolderPopupWindow.isShowing()+"----"+mFolderPopupWindow.toString());
+                Log.i(TAG, mFolderPopupWindow.isShowing() + "----" + mFolderPopupWindow.toString());
                 if (mFolderPopupWindow.isShowing()) {
                     mFolderPopupWindow.dismiss();
                 } else {
@@ -269,7 +285,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 break;
 
-            case R.id.tv_sure_big_photos:
+            case R.id.tv_finish:
                 Intent intent = new Intent();
                 if (loadType == Scanner.LOAD_TYPE_IMG) {
                     //intent.putExtra(MediaPicker.EXTRA_RESULT_ITEMS,mediaPicker.getSelectedImages());
@@ -282,29 +298,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
     }
-
-
-
-
-
-
-/*
-    if (mImageFolders == null) {
-        Log.i("ImageGridActivity", "您的手机没有图片");
-        return;
-    }
-    //点击文件夹按钮
-    createPopupFolderList();
-    mImageFolderAdapter.refreshData(mImageFolders);  //刷新数据
-    if (mFolderPopupWindow.isShowing()) {
-        mFolderPopupWindow.dismiss();
-    } else {
-        mFolderPopupWindow.showAtLocation(mFooterBar, Gravity.NO_GRAVITY, 0, 0);
-        //默认选择当前选择的上一个，当目录很多时，直接定位到已选中的条目
-        int index = mImageFolderAdapter.getSelectIndex();
-        index = index == 0 ? index : index - 1;
-        mFolderPopupWindow.setSelection(index);
-    }*/
 
 
 }

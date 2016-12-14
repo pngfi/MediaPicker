@@ -1,20 +1,10 @@
 package com.pngfi.mediapicker.utils;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
 import android.util.DisplayMetrics;
 
-/**
- * ================================================
- * 作    者：jeasonlzy（廖子尧 Github地址：https://github.com/jeasonlzy0216
- * 版    本：1.0
- * 创建日期：2016/5/19
- * 描    述：
- * 修订历史：
- * ================================================
- */
-public class Utils {
+
+public class ScreenUtil {
 
     /** 获得状态栏的高度 */
     public static int getStatusHeight(Context context) {
@@ -30,6 +20,7 @@ public class Utils {
         return statusHeight;
     }
 
+
     /** 三列取Item宽度 */
     public static int getImageItemWidth(Context activity) {
         int screenWidth = activity.getResources().getDisplayMetrics().widthPixels;
@@ -39,18 +30,11 @@ public class Utils {
     }
 
     /**
-     * 判断SDCard是否可用
-     */
-    public static boolean existSDCard() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
-
-    /**
      * 获取手机大小（分辨率）
      */
-    public static DisplayMetrics getScreenPix(Activity activity) {
-        DisplayMetrics displaysMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displaysMetrics);
-        return displaysMetrics;
+    public static DisplayMetrics getScreenPix(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
+        return metrics;
     }
 }

@@ -10,6 +10,7 @@
 
 
     <application
+        android:name=".MediaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,6 +26,8 @@
         <activity android:name=".ui.GridActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
+        <activity android:name=".ui.ImagePreviewActivity"
+            android:theme="@style/ImagePreviewStyle"/>
     </application>
 
 </manifest>

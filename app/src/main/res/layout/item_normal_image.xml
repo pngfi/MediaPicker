@@ -2,13 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_photo"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/iv_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/masker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_filter"
+        android:visibility="gone" />
 
     <CheckBox
         android:id="@+id/cb_select"
@@ -17,15 +25,7 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:button="@null"
         android:background="@drawable/select_photo_icon_selector"
-        />
-
-    <View
-        android:id="@+id/mask"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/photo_selected_color"
-        android:visibility="gone" />
+        android:button="@null" />
 
 </FrameLayout>

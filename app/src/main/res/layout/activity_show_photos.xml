@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root"
+    android:background="#000"
+    android:orientation="vertical">
+
+
+    <com.pngfi.mediapicker.view.HackyViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <include
+        android:id="@+id/layout_top_bar"
+        layout="@layout/kz_top_select_photo_bar" />
+
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:background="@color/show_photo_bottom_bar">
+
+        <TextView
+            android:id="@+id/tv_finish"
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:background="@drawable/btn_yellow_selector"
+            android:gravity="center"
+            android:text="完成"
+            android:textColor="@color/btn_yellow_text_color"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</FrameLayout>

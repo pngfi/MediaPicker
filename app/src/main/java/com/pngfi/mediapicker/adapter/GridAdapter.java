@@ -13,7 +13,7 @@ import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.engine.ImageLoader;
 import com.pngfi.mediapicker.entity.Image;
 import com.pngfi.mediapicker.entity.Media;
-import com.pngfi.mediapicker.utils.Utils;
+import com.pngfi.mediapicker.utils.ScreenUtil;
 
 import java.util.ArrayList;
 
@@ -47,11 +47,11 @@ public class GridAdapter extends BaseAdapter {
         this.selectedImages = selectedImages;
     }
 
-    private void setShowCamera(boolean showCamera) {
+    public void setShowCamera(boolean showCamera) {
         this.showCamera = showCamera;
     }
 
-    private boolean showCamera() {
+    public boolean showCamera() {
         return showCamera && imageFolderPosition == 0;
     }
 
@@ -62,7 +62,7 @@ public class GridAdapter extends BaseAdapter {
         else
             this.photos = images;
 
-        mImageSize = Utils.getImageItemWidth(context);
+        mImageSize = ScreenUtil.getImageItemWidth(context);
     }
 
 
@@ -138,7 +138,7 @@ public class GridAdapter extends BaseAdapter {
                 public void onClick(View v) {
 
                     if (listener != null) {
-                        listener.onSelectedChange(holder.cbSelect, holder.mask, photo);
+                        listener.onSelectedChange(holder.cbSelect,holder.mask, photo);
                     }
                 }
             });
@@ -157,16 +157,15 @@ public class GridAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        public View rootView;
         public ImageView ivPhoto;
-        public View mask;
         public CheckBox cbSelect;
+        //采用mask来实现透明，而不用setColorFilter是因为在三星4.+版本上会出问题
+        public View mask;
 
         public ViewHolder(View view) {
-            rootView = view;
             ivPhoto = (ImageView) view.findViewById(R.id.iv_photo);
-            mask = view.findViewById(R.id.mask);
             cbSelect = (CheckBox) view.findViewById(R.id.cb_select);
+            mask=view.findViewById(R.id.masker);
         }
     }
 

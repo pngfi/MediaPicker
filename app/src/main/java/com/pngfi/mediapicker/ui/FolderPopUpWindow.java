@@ -14,13 +14,9 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.adapter.ImageFolderAdapter;
-import com.pngfi.mediapicker.entity.ImageFolder;
 
-import java.util.List;
 
 
 /**
@@ -148,4 +144,7 @@ public class FolderPopUpWindow extends PopupWindow implements View.OnClickListen
     public interface OnItemClickListener {
         void onItemClick(AdapterView<?> adapterView, View view, int position, long l);
     }
+
+
+
 }

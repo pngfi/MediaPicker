@@ -17,13 +17,14 @@ public class ImagePicker {
 
     public static Builder builder() {
         return new Builder();
-
     }
 
     public static final String EXTRA_KEY_SELECTED = "extra_key_selected";
     public static final String EXTRA_KEY_SHOW_CAMERA = "extra_key_show_camera";
     public static final String EXTRA_KEY_SELECT_LIMIT = "extra_key_select_limit";
 
+
+    public static final String EXTRAK_KEY_CURRENT_POSITION="extra_key_current_position";
 
     public static final int DEFAULT_SELECT_LIMIT = 9;
     public static final boolean DEFAULT_SHOW_CAMERA = true;
@@ -41,17 +42,12 @@ public class ImagePicker {
             context.startActivity(intent);
         }
 
-
-
-
         public Builder showCamera(boolean showCamera) {
             intent.putExtra(EXTRA_KEY_SHOW_CAMERA, showCamera);
             return this;
         }
 
-
         public Builder selectLimit(int selectLimit) {
-
             intent.putExtra(EXTRA_KEY_SELECT_LIMIT, selectLimit);
             return this;
         }
@@ -60,6 +56,10 @@ public class ImagePicker {
             intent.putExtra(EXTRA_KEY_SELECTED, selected);
             return this;
         }
-
     }
+
+
+
+
+
 }

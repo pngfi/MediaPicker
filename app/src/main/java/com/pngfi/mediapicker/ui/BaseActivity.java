@@ -1,5 +1,6 @@
 package com.pngfi.mediapicker.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +15,14 @@ import com.pngfi.mediapicker.utils.PermissionHelper;
 public class BaseActivity extends AppCompatActivity {
 
     protected PermissionHelper mPermissionHelper;
+    protected Context mContext;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPermissionHelper=new PermissionHelper(this);
+        mContext=this;
     }
 
 

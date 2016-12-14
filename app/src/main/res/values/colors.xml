@@ -36,4 +36,7 @@
 
     <color name="comm_main_text">#111111</color>
     <color name="comm_second_text">#999999</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="color_filter">#77000000</color>
 </resources>

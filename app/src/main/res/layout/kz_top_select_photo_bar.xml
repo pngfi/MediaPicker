@@ -2,40 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/select_top_bar"
-    >
-  <TextView
-      android:id="@+id/tv_back"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:background="@drawable/item_black_to_grey_selector"
-      android:drawableLeft="@drawable/comm_back_arrow"
-      android:drawablePadding="5dp"
-      android:gravity="center"
-      android:paddingLeft="10dp"
-      android:paddingRight="10dp"
-      android:text="@string/back"
-      android:textColor="@color/back_text_selector"
-      android:textSize="14sp"
-      />
-  <TextView
-      android:id="@+id/tv_show_title"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:layout_centerHorizontal="true"
-      android:gravity="center"
-      android:text="社区"
-      android:textColor="@color/comm_text_white"
-      android:textSize="18sp"
-      />
-  <ImageView
-      android:id="@+id/img_selector"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:layout_marginRight="10dp"
-      android:background="@drawable/select_photo_icon_selector"
-      android:visibility="gone"
-      />
+    android:background="@color/select_top_bar">
+
+    <TextView
+        android:id="@+id/tv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/item_black_to_grey_selector"
+        android:drawableLeft="@drawable/comm_back_arrow"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/back"
+        android:textColor="@color/back_text_selector"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_show_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="社区"
+        android:textColor="@color/comm_text_white"
+        android:textSize="18sp" />
+
+    <CheckBox
+        android:id="@+id/cb_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/select_photo_icon_selector"
+        android:button="@null"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pngfi.mediapicker.engine.ImageLoader;
-import com.pngfi.mediapicker.entity.Image;
+import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
 import java.util.ArrayList;
@@ -23,11 +23,11 @@ public class ImagePageAdapter extends PagerAdapter {
 
     private int screenWidth;
     private int screenHeight;
-    private ArrayList<Image> images = new ArrayList<>();
+    private ArrayList<Media> images = new ArrayList<>();
     private Context context;
     public OnPhotoTapListener listener;
 
-    public ImagePageAdapter(Context context, ArrayList<Image> images) {
+    public ImagePageAdapter(Context context, ArrayList<Media> images) {
         this.context = context;
         this.images = images;
 
@@ -36,7 +36,7 @@ public class ImagePageAdapter extends PagerAdapter {
         screenHeight = dm.heightPixels;
     }
 
-    public void setData(ArrayList<Image> images) {
+    public void setData(ArrayList<Media> images) {
         this.images = images;
     }
 
@@ -47,7 +47,7 @@ public class ImagePageAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         PhotoView photoView = new PhotoView(context);
-        Image image = images.get(position);
+        Media image = images.get(position);
         ImageLoader.loadImage(context, photoView, image.getPath(), screenWidth, screenHeight);
         photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override

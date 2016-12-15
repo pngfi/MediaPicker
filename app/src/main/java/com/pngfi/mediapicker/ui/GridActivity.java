@@ -2,19 +2,14 @@ package com.pngfi.mediapicker.ui;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,14 +19,12 @@ import com.pngfi.mediapicker.adapter.GridAdapter;
 import com.pngfi.mediapicker.adapter.ImageFolderAdapter;
 import com.pngfi.mediapicker.engine.ImagePicker;
 import com.pngfi.mediapicker.engine.Scanner;
-import com.pngfi.mediapicker.entity.Image;
 import com.pngfi.mediapicker.entity.ImageFolder;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.MediaHelper;
 import com.pngfi.mediapicker.utils.PermissionHelper;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +90,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                             Toast.makeText(GridActivity.this, "你的手机没有图片", Toast.LENGTH_LONG).show();
                             return;
                         }
+
                         mPhotoGridAdapter.refreshData(imageFolders.get(0).getImages());
                         mPhotoGridAdapter.setImageFolderPosition(0);
 
@@ -125,8 +119,10 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             mTvTitle.setText(R.string.video);
         }
         //参数
-        ArrayList<Image> list = getIntent().getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
-        mSelected.addAll(list);
+        ArrayList<Media> list = getIntent().getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+        if (list!=null){
+            mSelected.addAll(list);
+        }
         mPhotoGridAdapter.setSelectedImages(mSelected);
 
         selectLimit = getIntent().getIntExtra(ImagePicker.EXTRA_KEY_SELECT_LIMIT, ImagePicker.DEFAULT_SELECT_LIMIT);
@@ -211,14 +207,14 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             if (mImageFolders.size() > 0) {
                 String path = mediaHelper.getCurrentPath();
                 ImageFolder mainFolder = mImageFolders.get(0);
-                Image image = new Image();
+                Media image = new Media();
                 image.setPath(path);
                 mainFolder.getImages().add(0, image);
                 mainFolder.setCover(image);
                 mPhotoGridAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_CANCELED) {
-            ArrayList<Image> imageList = data.getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+            ArrayList<Media> imageList = data.getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
             mSelected.clear();
             mSelected.addAll(imageList);
             mPhotoGridAdapter.notifyDataSetChanged();

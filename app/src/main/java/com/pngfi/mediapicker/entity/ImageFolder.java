@@ -11,8 +11,8 @@ public class ImageFolder {
 
     private String name;
     private String path;
-    private Image cover;   //封面图
-    private ArrayList<Image> images;
+    private Media cover;   //封面图
+    private ArrayList<Media> images;
 
     @Override
     public boolean equals(Object o) {
@@ -41,19 +41,19 @@ public class ImageFolder {
         this.path = path;
     }
 
-    public Image getCover() {
+    public Media getCover() {
         return cover;
     }
 
-    public void setCover(Image cover) {
+    public void setCover(Media cover) {
         this.cover = cover;
     }
 
-    public ArrayList<Image> getImages() {
+    public ArrayList<Media> getImages() {
         return images;
     }
 
-    public void setImages(ArrayList<Image> images) {
+    public void setImages(ArrayList<Media> images) {
         this.images = images;
     }
 }

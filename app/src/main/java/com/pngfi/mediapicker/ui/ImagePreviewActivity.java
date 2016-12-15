@@ -15,11 +15,12 @@ import android.widget.Toast;
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.ImagePageAdapter;
 import com.pngfi.mediapicker.engine.ImagePicker;
-import com.pngfi.mediapicker.entity.Image;
+import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.SystemBarTintManager;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
 import java.util.ArrayList;
+
 
 /**
  * Created by pngfi on 2016/12/13.
@@ -35,8 +36,8 @@ public class ImagePreviewActivity extends BaseActivity {
     private View bottomBar;
 
 
-    private ArrayList<Image> mSelected;//当前选中的图片
-    private ArrayList<Image> mImageList;
+    private ArrayList<Media> mSelected;//当前选中的图片
+    private ArrayList<Media> mImageList;
     private SystemBarTintManager tintManager;
     private View root;
     private TextView tvFinish;
@@ -137,7 +138,7 @@ public class ImagePreviewActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 boolean checked = cbSelect.isChecked();
-                Image image = mImageList.get(mCurrentPosition);
+                Media image = mImageList.get(mCurrentPosition);
                 if (checked){
                     //这里要修改，记得改
                     if (mSelected.size()>=9){

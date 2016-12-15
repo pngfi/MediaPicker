@@ -7,10 +7,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 
-import com.pngfi.mediapicker.entity.Image;
 import com.pngfi.mediapicker.entity.ImageFolder;
+import com.pngfi.mediapicker.entity.Media;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data != null && data.getCount() > 0) {
-            ArrayList<Image> allImages = new ArrayList<>();
+            ArrayList<Media> allImages = new ArrayList<>();
             //清除
             imageFolders.clear();
             if (loadType == LOAD_TYPE_IMG) {
@@ -100,7 +99,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
                     long size = data.getLong(data.getColumnIndex(IMG_PROJECTION[1]));
                     String mimeType = data.getString(data.getColumnIndex(IMG_PROJECTION[2]));
                     long addTime = data.getLong(data.getColumnIndex(IMG_PROJECTION[3]));
-                    Image image = new Image();
+                    Media image = new Media();
                     image.setPath(path);
                     image.setSize(size);
                     image.setMimeType(mimeType);
@@ -113,7 +112,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
                     imageFolder.setName(imageParentFile.getName());
                     imageFolder.setPath(imageParentFile.getAbsolutePath());
                     if (!imageFolders.contains(imageFolder)) {
-                        ArrayList<Image> images = new ArrayList<>();
+                        ArrayList<Media> images = new ArrayList<>();
                         images.add(image);
                         imageFolder.setCover(image);
                         imageFolder.setImages(images);

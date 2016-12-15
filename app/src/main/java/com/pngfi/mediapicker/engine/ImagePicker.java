@@ -3,7 +3,7 @@ package com.pngfi.mediapicker.engine;
 import android.content.Context;
 import android.content.Intent;
 
-import com.pngfi.mediapicker.entity.Image;
+import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.ui.GridActivity;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class ImagePicker {
             return this;
         }
 
-        public Builder selected(ArrayList<Image> selected) {
+        public Builder selected(ArrayList<Media> selected) {
             intent.putExtra(EXTRA_KEY_SELECTED, selected);
             return this;
         }

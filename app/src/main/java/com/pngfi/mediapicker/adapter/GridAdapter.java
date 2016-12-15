@@ -11,7 +11,6 @@ import android.widget.ImageView;
 
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.engine.ImageLoader;
-import com.pngfi.mediapicker.entity.Image;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
@@ -26,7 +25,7 @@ public class GridAdapter extends BaseAdapter {
     private static final int ITEM_TYPE_NORMAL = 1;  //第一个条目不是相机
 
     private Context context;
-    private ArrayList<Image> photos;       //当前需要显示的所有的图片数据
+    private ArrayList<Media> photos;       //当前需要显示的所有的图片数据
 
     private int mImageSize;               //每个条目的大小
     private OnSelectedChangeListener listener;   //图片被点击的监听
@@ -55,7 +54,7 @@ public class GridAdapter extends BaseAdapter {
         return showCamera && imageFolderPosition == 0;
     }
 
-    public GridAdapter(Context context, ArrayList<Image> images) {
+    public GridAdapter(Context context, ArrayList<Media> images) {
         this.context = context;
         if (images == null || images.size() == 0)
             this.photos = new ArrayList<>();
@@ -75,9 +74,11 @@ public class GridAdapter extends BaseAdapter {
         imageFolderPosition = position;
     }
 
-    public void refreshData(ArrayList<Image> images) {
-        if (images == null || images.size() == 0) this.photos = new ArrayList<>();
-        else this.photos = images;
+    public void refreshData(ArrayList<Media> images) {
+        if (images == null || images.size() == 0)
+            this.photos = new ArrayList<>();
+        else
+            this.photos = images;
         notifyDataSetChanged();
     }
 
@@ -99,7 +100,7 @@ public class GridAdapter extends BaseAdapter {
     }
 
     @Override
-    public Image getItem(int position) {
+    public Media getItem(int position) {
         if (showCamera()) {
             if (position == 0) return null;
             return photos.get(position - 1);
@@ -131,14 +132,14 @@ public class GridAdapter extends BaseAdapter {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            final Image photo = getItem(position);
+            final Media photo = getItem(position);
 
             holder.cbSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if (listener != null) {
-                        listener.onSelectedChange(holder.cbSelect,holder.mask, photo);
+                        listener.onSelectedChange(holder.cbSelect, holder.mask, photo);
                     }
                 }
             });
@@ -165,7 +166,7 @@ public class GridAdapter extends BaseAdapter {
         public ViewHolder(View view) {
             ivPhoto = (ImageView) view.findViewById(R.id.iv_photo);
             cbSelect = (CheckBox) view.findViewById(R.id.cb_select);
-            mask=view.findViewById(R.id.masker);
+            mask = view.findViewById(R.id.masker);
         }
     }
 

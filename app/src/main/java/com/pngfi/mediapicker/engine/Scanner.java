@@ -64,6 +64,17 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
         imageFolders = new ArrayList<>();
     }
 
+    public Scanner(FragmentActivity activity){
+        this(activity,LOAD_TYPE_IMG);
+    }
+
+    public int getLoadType() {
+        return loadType;
+    }
+
+    public void setLoadType(int loadType) {
+        this.loadType = loadType;
+    }
 
     public void scan(OnLoadFishedListener listener) {
         if (listener == null) {
@@ -144,7 +155,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
              * 关闭后即不会再查询
              */
             data.close();
-            mListenter.onLoadFinshed(imageFolders);
+            mListenter.onLoadFinshed(loadType,imageFolders);
         }
 
 
@@ -158,6 +169,6 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     public interface OnLoadFishedListener {
-        void onLoadFinshed(List<ImageFolder> imageFolders);
+        void onLoadFinshed(int loadType,List<ImageFolder> imageFolders);
     }
 }

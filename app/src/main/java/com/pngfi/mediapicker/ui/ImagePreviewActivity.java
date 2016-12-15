@@ -159,7 +159,10 @@ public class ImagePreviewActivity extends BaseActivity {
         tvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent data=new Intent();
+                data.putExtra(MediaPicker.EXTRA_KEY_SELECTED,mSelected);
+                setResult(RESULT_OK,data);
+                finish();
             }
         });
         mViewPager.setCurrentItem(mCurrentPosition,false);

@@ -2,11 +2,18 @@ package com.pngfi.mediapicker.engine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 
 import com.pngfi.mediapicker.entity.Media;
+import com.pngfi.mediapicker.event.ImagePickerFinishEvent;
 import com.pngfi.mediapicker.ui.GridActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by pngfi on 2016/12/9.
@@ -47,14 +54,21 @@ public class MediaPicker {
     }
 
 
-    public static class Builder {
+    public static class Builder<T>{
         private Intent intent;
 
+        //private Transform<T> mTransform;
+        private CallBack mCallBack;
         public Builder() {
             intent = new Intent();
+            EventBus.getDefault().register(this);
         }
 
-        public void open(Context context) {
+        public void show(Context context, CallBack callBack) {
+            if (callBack==null){
+                throw  new NullPointerException("callBack must not be null");
+            }
+            mCallBack=callBack;
             intent.setClass(context, GridActivity.class);
             context.startActivity(intent);
         }
@@ -69,10 +83,32 @@ public class MediaPicker {
             return this;
         }
 
+
         public Builder selected(ArrayList<Media> selected) {
             intent.putExtra(EXTRA_KEY_SELECTED, selected);
             return this;
         }
+
+        /*public Builder transform(Transform<T> transform){
+            mTransform=transform;
+            return this;
+        }*/
+
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        public  void onImagePickerFinishEvent(ImagePickerFinishEvent event){
+            List<Media> list = event.getList();
+            mCallBack.onPickerFinished(list);
+            EventBus.getDefault().unregister(this);
+        }
+
+
+        public  interface CallBack{
+            void onPickerFinished(List<Media> list);
+        }
+
+
+
+
     }
 
 

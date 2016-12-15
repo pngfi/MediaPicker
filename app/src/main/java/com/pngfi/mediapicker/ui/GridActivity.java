@@ -21,8 +21,11 @@ import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.ImageFolder;
 import com.pngfi.mediapicker.entity.Media;
+import com.pngfi.mediapicker.event.ImagePickerFinishEvent;
 import com.pngfi.mediapicker.utils.MediaHelper;
 import com.pngfi.mediapicker.utils.PermissionHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mTvPhotoDir;
     private RelativeLayout mLayoutShowPopupwindow;
-    private TextView mTvSureBigPhotos;
+    private TextView mTvFinish;
     private RelativeLayout mLayoutPhotoDir;
 
 
@@ -76,38 +79,13 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_select_photo);
         initView();
         initData();
-        mPermissionHelper.requestPermissions(new PermissionHelper.PermissionListener() {
-            @Override
-            public void doAfterGrand(String... permission) {
 
-                Scanner scanner = new Scanner(GridActivity.this, Scanner.LOAD_TYPE_IMG);
-                scanner.scan(new Scanner.OnLoadFishedListener() {
-                    @Override
-                    public void onLoadFinshed(List<ImageFolder> imageFolders) {
-                        mImageFolders = imageFolders;
-                        if (imageFolders.size() == 0) {
-                            mPhotoGridAdapter.refreshData(null);
-                            Toast.makeText(GridActivity.this, "你的手机没有图片", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        mPhotoGridAdapter.refreshData(imageFolders.get(0).getImages());
-                        mPhotoGridAdapter.setImageFolderPosition(0);
-
-                        mImageFolderAdapter = new ImageFolderAdapter(GridActivity.this, mImageFolders);
-                    }
-                });
-            }
-
-            @Override
-            public void doAfterDenied(String... permission) {
-
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
     }
 
     private void initData() {
+        mTvFinish.setOnClickListener(this);
+        mTvBack.setOnClickListener(this);
         mPhotoGridAdapter = new GridAdapter(this);
         mGridView.setAdapter(mPhotoGridAdapter);
         //mImageFolderAdapter = new ImageFolderAdapter(this, null);
@@ -120,7 +98,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         }
         //参数
         ArrayList<Media> list = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
-        if (list!=null){
+        if (list != null) {
             mSelected.addAll(list);
         }
         mPhotoGridAdapter.setSelectedImages(mSelected);
@@ -143,7 +121,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                     mask.setVisibility(View.GONE);
                     mSelected.remove(media);
                 }
-
                 changeTvFinish();
             }
         });
@@ -159,10 +136,8 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                         public void doAfterGrand(String... permission) {
                             openCamera();
                         }
-
                         @Override
                         public void doAfterDenied(String... permission) {
-
                         }
                     }, Manifest.permission.CAMERA);
                 } else {
@@ -175,17 +150,49 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
+
+
+        mPermissionHelper.requestPermissions(new PermissionHelper.PermissionListener() {
+            @Override
+            public void doAfterGrand(String... permission) {
+
+                Scanner scanner = new Scanner(GridActivity.this, loadType);
+                scanner.scan(new Scanner.OnLoadFishedListener() {
+                    @Override
+                    public void onLoadFinshed(int loadType, List<ImageFolder> imageFolders) {
+                        mImageFolders = imageFolders;
+                        if (loadType == Scanner.LOAD_TYPE_IMG) {
+                            mImageFolderAdapter = new ImageFolderAdapter(GridActivity.this, mImageFolders);
+                        } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
+
+                        }
+                        if (imageFolders.size() == 0) {
+                            mPhotoGridAdapter.refreshData(null);
+                            Toast.makeText(GridActivity.this, "你的手机没有图片", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        mPhotoGridAdapter.refreshData(imageFolders.get(0).getImages());
+                        mPhotoGridAdapter.setImageFolderPosition(0);
+                    }
+                });
+            }
+
+            @Override
+            public void doAfterDenied(String... permission) {
+
+            }
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     private void changeTvFinish() {
         if (mSelected.size() > 0) {
-            mTvSureBigPhotos.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", selectLimit + ""));
-            mTvSureBigPhotos.setEnabled(true);
-            mTvSureBigPhotos.setSelected(true);
+            mTvFinish.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", selectLimit + ""));
+            mTvFinish.setEnabled(true);
+            mTvFinish.setSelected(true);
         } else {
-            mTvSureBigPhotos.setSelected(false);
-            mTvSureBigPhotos.setText(getString(R.string.btn_select));
-            mTvSureBigPhotos.setEnabled(false);
+            mTvFinish.setSelected(false);
+            mTvFinish.setText(getString(R.string.btn_select));
+            mTvFinish.setEnabled(false);
         }
     }
 
@@ -219,6 +226,10 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             mSelected.addAll(imageList);
             mPhotoGridAdapter.notifyDataSetChanged();
             changeTvFinish();
+        } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_OK ){
+            ArrayList<Media> imageList = data.getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
+            EventBus.getDefault().post(new ImagePickerFinishEvent(imageList));
+            finish();
         }
     }
 
@@ -254,7 +265,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         mGridView = (GridView) findViewById(R.id.gridview);
         mTvPhotoDir = (TextView) findViewById(R.id.tv_photo_dir);
         mLayoutShowPopupwindow = (RelativeLayout) findViewById(R.id.layout_show_popupwindow);
-        mTvSureBigPhotos = (TextView) findViewById(R.id.tv_finish);
+        mTvFinish = (TextView) findViewById(R.id.tv_finish);
         mLayoutPhotoDir = (RelativeLayout) findViewById(R.id.layout_photo_dir);
     }
 
@@ -284,7 +295,8 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             case R.id.tv_finish:
                 Intent intent = new Intent();
                 if (loadType == Scanner.LOAD_TYPE_IMG) {
-                    //intent.putExtra(MediaPicker.EXTRA_RESULT_ITEMS,mediaPicker.getSelectedImages());
+                    EventBus.getDefault().post(new ImagePickerFinishEvent(mSelected));
+                    finish();
                     setResult(Scanner.LOAD_TYPE_IMG, intent);
                 } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
                    /* intent.putExtra(MediaPicker.EXTRA_RESULT_ITEMS,mediaPicker.getSelectedImages());

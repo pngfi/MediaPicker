@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.ImagePageAdapter;
-import com.pngfi.mediapicker.engine.ImagePicker;
+import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.SystemBarTintManager;
 import com.pngfi.mediapicker.utils.ScreenUtil;
@@ -77,9 +77,9 @@ public class ImagePreviewActivity extends BaseActivity {
 
 
     private void initData() {
-        mSelected = getIntent().getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+        mSelected = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
         mImageList = getIntent().getParcelableArrayListExtra(GridActivity.EXTRA_KEY_CURRENT_FOLDER_LIST);
-        mCurrentPosition=getIntent().getIntExtra(ImagePicker.EXTRAK_KEY_CURRENT_POSITION,0);
+        mCurrentPosition=getIntent().getIntExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION,0);
 
 
         ImagePageAdapter imagePageAdapter = new ImagePageAdapter(this, mImageList);
@@ -189,7 +189,7 @@ public class ImagePreviewActivity extends BaseActivity {
 
     private void back(){
         Intent data=new Intent();
-        data.putExtra(ImagePicker.EXTRA_KEY_SELECTED,mSelected);
+        data.putExtra(MediaPicker.EXTRA_KEY_SELECTED,mSelected);
         setResult(RESULT_CANCELED,data);
         finish();
     }

@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.GridAdapter;
 import com.pngfi.mediapicker.adapter.ImageFolderAdapter;
-import com.pngfi.mediapicker.engine.ImagePicker;
+import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.ImageFolder;
 import com.pngfi.mediapicker.entity.Media;
@@ -119,14 +119,14 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             mTvTitle.setText(R.string.video);
         }
         //参数
-        ArrayList<Media> list = getIntent().getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+        ArrayList<Media> list = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
         if (list!=null){
             mSelected.addAll(list);
         }
         mPhotoGridAdapter.setSelectedImages(mSelected);
 
-        selectLimit = getIntent().getIntExtra(ImagePicker.EXTRA_KEY_SELECT_LIMIT, ImagePicker.DEFAULT_SELECT_LIMIT);
-        showCamera = getIntent().getBooleanExtra(ImagePicker.EXTRA_KEY_SHOW_CAMERA, true);
+        selectLimit = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT, MediaPicker.DEFAULT_SELECT_LIMIT);
+        showCamera = getIntent().getBooleanExtra(MediaPicker.EXTRA_KEY_SHOW_CAMERA, true);
         mPhotoGridAdapter.setOnSelectedChangeListener(new GridAdapter.OnSelectedChangeListener() {
             @Override
             public void onSelectedChange(CheckBox select, View mask, Media media) {
@@ -168,9 +168,9 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     Intent intent = new Intent(GridActivity.this, ImagePreviewActivity.class);
                     intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(mImageFolderAdapter.getSelectIndex()).getImages());
-                    intent.putExtra(ImagePicker.EXTRA_KEY_SELECTED, mSelected);
+                    intent.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
                     int curPositon = mPhotoGridAdapter.showCamera() ? position - 1 : position;
-                    intent.putExtra(ImagePicker.EXTRAK_KEY_CURRENT_POSITION, curPositon);
+                    intent.putExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION, curPositon);
                     startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
                 }
             }
@@ -214,7 +214,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 mPhotoGridAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_CANCELED) {
-            ArrayList<Media> imageList = data.getParcelableArrayListExtra(ImagePicker.EXTRA_KEY_SELECTED);
+            ArrayList<Media> imageList = data.getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
             mSelected.clear();
             mSelected.addAll(imageList);
             mPhotoGridAdapter.notifyDataSetChanged();

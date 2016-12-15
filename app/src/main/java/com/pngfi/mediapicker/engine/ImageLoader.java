@@ -14,7 +14,7 @@ import java.io.File;
  * 使用MediaPicker来配置ImageLoader，减少与图片框架之间的耦合
  */
 
-public class ImageLoader {
+public abstract class ImageLoader {
 
 
     /**
@@ -24,13 +24,11 @@ public class ImageLoader {
      * @param width   宽度
      * @param height  高度
      */
-     public static void loadImage(Context context, ImageView imageView, String path, int width, int height){
-         Glide.with(context)
-                 .load(Uri.fromFile(new File(path)))
-                 .centerCrop()
-                 .placeholder(R.mipmap.ic_launcher)
-                 .crossFade()
-                 .into(imageView);
-     }
+    public void loadImage(Context context, ImageView imageView, String path, int width, int height){
+        loadImage(context,imageView,path,0,width,height);
+    }
+
+
+     abstract void loadImage(Context context, ImageView imageView, String path,int placeHolderRes,int width, int height);
 
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.engine.ImageLoader;
+import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.entity.ImageFolder;
 
 
@@ -70,7 +71,7 @@ public class ImageFolderAdapter extends BaseAdapter {
         ImageFolder folder = getItem(position);
         holder.folderName.setText(folder.getName());
         holder.imageCount.setText(folder.getImages().size()+" ");
-        ImageLoader.loadImage(mContext, holder.cover,folder.getCover().getPath(),  0, 0);
+        MediaPicker.imageLoader().loadImage(mContext, holder.cover,folder.getCover().getPath(),  0, 0);
 
         if (lastSelected == position) {
             holder.folderCheck.setVisibility(View.VISIBLE);

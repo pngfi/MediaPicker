@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by pngfi on 2016/12/8.
+ *
  */
 
 public class Media implements Parcelable{
@@ -13,6 +14,21 @@ public class Media implements Parcelable{
     private long size;
     private String mimeType;
     private long addTime;//创建时间
+
+    /**
+     * 这个字段没有采用继承的原因：
+     * java泛型的檫除在复用类的时候会产生很多问题，
+     * 采用一种省事的办法
+     */
+    private long duration;//视频的时长
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
 
     public Media(){
 
@@ -23,6 +39,7 @@ public class Media implements Parcelable{
         size = in.readLong();
         mimeType = in.readString();
         addTime = in.readLong();
+        duration=in.readLong();
     }
 
     public static final Creator<Media> CREATOR = new Creator<Media>() {
@@ -91,5 +108,6 @@ public class Media implements Parcelable{
         dest.writeLong(size);
         dest.writeString(mimeType);
         dest.writeLong(addTime);
+        dest.writeLong(duration);
     }
 }

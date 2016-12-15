@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pngfi.mediapicker.engine.ImageLoader;
+import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
@@ -48,7 +49,7 @@ public class ImagePageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         PhotoView photoView = new PhotoView(context);
         Media image = images.get(position);
-        ImageLoader.loadImage(context, photoView, image.getPath(), screenWidth, screenHeight);
+        MediaPicker.imageLoader().loadImage(context, photoView, image.getPath(), screenWidth, screenHeight);
         photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float x, float y) {

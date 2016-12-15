@@ -13,18 +13,18 @@ import java.io.File;
  * Created by pngfi on 2016/12/1.
  */
 
-public class GlideImageLoader  {
+public class GlideImageLoader extends ImageLoader {
 
 
-    /*@Override
-    public void loadImage(Context context, ImageView imageView, String path, int width, int height) {
+    @Override
+    void loadImage(Context context, ImageView imageView, String path, int placeHolderRes, int width, int height) {
         Glide.with(context)
                 .load(Uri.fromFile(new File(path)))
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(placeHolderRes)
                 .crossFade()
                 .into(imageView);
-    }*/
+    }
 
 
 }

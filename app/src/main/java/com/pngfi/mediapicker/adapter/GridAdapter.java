@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.engine.ImageLoader;
+import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
@@ -152,7 +153,7 @@ public class GridAdapter extends BaseAdapter {
                 holder.mask.setVisibility(View.GONE);
                 holder.cbSelect.setChecked(false);
             }
-            ImageLoader.loadImage(context, holder.ivPhoto, photo.getPath(), mImageSize, mImageSize); //显示图片
+            MediaPicker.imageLoader().loadImage(context, holder.ivPhoto, photo.getPath(), mImageSize, mImageSize); //显示图片
         }
         return convertView;
     }

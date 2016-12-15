@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.pngfi.mediapicker.engine.ImagePicker;
+import com.pngfi.mediapicker.engine.MediaPicker;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePicker.builder().open(MainActivity.this);
+                MediaPicker.builder().open(MainActivity.this);
             }
         });
 

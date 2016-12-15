@@ -12,12 +12,24 @@ import java.util.ArrayList;
  * Created by pngfi on 2016/12/9.
  */
 
-public class ImagePicker {
+public class MediaPicker {
+
+    private static ImageLoader sImageLoader;
 
 
-    public static Builder builder() {
-        return new Builder();
+    /**
+     * 在Application中初始化
+     * @param imageLoader
+     */
+    public static void initImageLoader(ImageLoader imageLoader){
+        sImageLoader=imageLoader;
     }
+
+
+    public static ImageLoader imageLoader(){
+        return sImageLoader;
+    }
+
 
     public static final String EXTRA_KEY_SELECTED = "extra_key_selected";
     public static final String EXTRA_KEY_SHOW_CAMERA = "extra_key_show_camera";
@@ -28,6 +40,11 @@ public class ImagePicker {
 
     public static final int DEFAULT_SELECT_LIMIT = 9;
     public static final boolean DEFAULT_SHOW_CAMERA = true;
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
 
     public static class Builder {

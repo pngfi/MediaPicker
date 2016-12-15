@@ -9,4 +9,15 @@
     <string name="photo">照片</string>
     <string name="video">视频</string>
     <string name="image_exceed_limit_prompt">图片不能超过%s张</string>
+
+
+
+    <!--录像机部分使用到-->
+    <string name="tip">提示</string>
+    <string name="sure">确定</string>
+    <string name="cancel">取消</string>
+    <string name="no_camera">您的设备没有摄像头，无法使用此功能</string>
+    <string name="choose_current_video">录制完成，选择当前视频？</string>
+    <string name="record_video_error">录制视频出错,请重试</string>
+
 </resources>

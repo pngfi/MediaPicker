@@ -41,7 +41,7 @@ public class MediaPicker {
     public static final String EXTRA_KEY_SELECTED = "extra_key_selected";
     public static final String EXTRA_KEY_SHOW_CAMERA = "extra_key_show_camera";
     public static final String EXTRA_KEY_SELECT_LIMIT = "extra_key_select_limit";
-
+    public static final String EXTRA_KEY_LOAD_TYPE = "load_type_extra";
 
     public static final String EXTRAK_KEY_CURRENT_POSITION="extra_key_current_position";
 
@@ -54,11 +54,13 @@ public class MediaPicker {
     }
 
 
-    public static class Builder<T>{
+    public static class Builder{
         private Intent intent;
 
         //private Transform<T> mTransform;
         private CallBack mCallBack;
+        private int type;
+
         public Builder() {
             intent = new Intent();
             EventBus.getDefault().register(this);
@@ -71,6 +73,18 @@ public class MediaPicker {
             mCallBack=callBack;
             intent.setClass(context, GridActivity.class);
             context.startActivity(intent);
+        }
+
+        public Builder imagePicker(){
+            type=1;
+            intent.putExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE,Scanner.LOAD_TYPE_IMG);
+            return this;
+        }
+
+        public Builder mediaPicker(){
+            type=2;
+            intent.putExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE,Scanner.LOAD_TYPE_VIDEO);
+            return this;
         }
 
         public Builder showCamera(boolean showCamera) {

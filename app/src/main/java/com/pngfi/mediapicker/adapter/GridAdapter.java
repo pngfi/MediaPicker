@@ -8,22 +8,25 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.engine.ImageLoader;
 import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by pngfi on 2016/11/30.
  */
 public class GridAdapter extends BaseAdapter {
 
-    private static final int ITEM_TYPE_CAMERA = 0;  //第一个条目是相机
-    private static final int ITEM_TYPE_NORMAL = 1;  //第一个条目不是相机
+    private static final int ITEM_TYPE_CAMERA = 0;  //相机
+    private static final int ITEM_TYPE_NORMAL = 1;  //其他
 
     private Context context;
     private ArrayList<Media> photos;       //当前需要显示的所有的图片数据
@@ -38,6 +41,7 @@ public class GridAdapter extends BaseAdapter {
 
     private int imageFolderPosition;//图片文件夹在List中的位置
 
+    private int loadType = Scanner.LOAD_TYPE_IMG;
 
     public ArrayList<Media> getSelectedImages() {
         return selectedImages;
@@ -51,6 +55,14 @@ public class GridAdapter extends BaseAdapter {
         this.showCamera = showCamera;
     }
 
+    public int getLoadType() {
+        return loadType;
+    }
+
+    public void setLoadType(int loadType) {
+        this.loadType = loadType;
+    }
+
     public boolean showCamera() {
         return showCamera && imageFolderPosition == 0;
     }
@@ -61,7 +73,6 @@ public class GridAdapter extends BaseAdapter {
             this.photos = new ArrayList<>();
         else
             this.photos = images;
-
         mImageSize = ScreenUtil.getImageItemWidth(context);
     }
 
@@ -120,8 +131,13 @@ public class GridAdapter extends BaseAdapter {
         int itemViewType = getItemViewType(position);
         if (itemViewType == ITEM_TYPE_CAMERA) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_camera, parent, false);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+            if (loadType == Scanner.LOAD_TYPE_IMG) {
+                imageView.setImageResource(R.drawable.ic_take_camera);
+            } else {
+                imageView.setImageResource(R.drawable.ic_take_video);
+            }
             convertView.setLayoutParams(new AbsListView.LayoutParams(mImageSize, mImageSize));
-
         } else {
             final ViewHolder holder;
             if (convertView == null) {
@@ -153,9 +169,20 @@ public class GridAdapter extends BaseAdapter {
                 holder.mask.setVisibility(View.GONE);
                 holder.cbSelect.setChecked(false);
             }
+
+            if (loadType == Scanner.LOAD_TYPE_VIDEO) {
+                holder.tvTime.setVisibility(View.VISIBLE);
+                SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+                holder.tvTime.setText(sdf.format(new Date(photo.getDuration())));
+
+            } else if (loadType == Scanner.LOAD_TYPE_IMG) {
+                holder.tvTime.setVisibility(View.GONE);
+            }
+
             MediaPicker.imageLoader().loadImage(context, holder.ivPhoto, photo.getPath(), mImageSize, mImageSize); //显示图片
         }
         return convertView;
+
     }
 
     private class ViewHolder {
@@ -163,11 +190,14 @@ public class GridAdapter extends BaseAdapter {
         public CheckBox cbSelect;
         //采用mask来实现透明，而不用setColorFilter是因为在三星4.+版本上会出问题
         public View mask;
+        public TextView tvTime;
+
 
         public ViewHolder(View view) {
             ivPhoto = (ImageView) view.findViewById(R.id.iv_photo);
             cbSelect = (CheckBox) view.findViewById(R.id.cb_select);
             mask = view.findViewById(R.id.masker);
+            tvTime = (TextView) view.findViewById(R.id.tv_time);
         }
     }
 

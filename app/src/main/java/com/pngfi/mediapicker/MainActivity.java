@@ -33,7 +33,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_video).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MediaPicker.builder().mediaPicker().show(MainActivity.this, new MediaPicker.Builder.CallBack() {
+                    @Override
+                    public void onPickerFinished(List<Media> list) {
 
+                    }
+                });
             }
         });
     }

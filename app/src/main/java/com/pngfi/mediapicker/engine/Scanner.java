@@ -64,8 +64,8 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
         imageFolders = new ArrayList<>();
     }
 
-    public Scanner(FragmentActivity activity){
-        this(activity,LOAD_TYPE_IMG);
+    public Scanner(FragmentActivity activity) {
+        this(activity, LOAD_TYPE_IMG);
     }
 
     public int getLoadType() {
@@ -100,7 +100,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data != null && data.getCount() > 0) {
-            ArrayList<Media> allImages = new ArrayList<>();
+            ArrayList<Media> allMedias = new ArrayList<>();
             //清除
             imageFolders.clear();
             if (loadType == LOAD_TYPE_IMG) {
@@ -115,7 +115,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
                     image.setSize(size);
                     image.setMimeType(mimeType);
                     image.setAddTime(addTime);
-                    allImages.add(image);
+                    allMedias.add(image);
 
                     File imageFile = new File(path);
                     File imageParentFile = imageFile.getParentFile();
@@ -139,13 +139,38 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
                 ImageFolder allImagesFolder = new ImageFolder();
                 allImagesFolder.setName("所有图片");
                 allImagesFolder.setPath("/");
-                allImagesFolder.setCover(allImages.get(0));
-                allImagesFolder.setImages(allImages);
+                allImagesFolder.setCover(allMedias.get(0));
+                allImagesFolder.setImages(allMedias);
                 imageFolders.add(0, allImagesFolder);
 
             } else if (loadType == LOAD_TYPE_VIDEO) {
 
+                while (data.moveToNext()) {
+                    String path = data.getString(data.getColumnIndex(VIDEO_PROJECTION[0]));
+                    long size = data.getLong(data.getColumnIndex(VIDEO_PROJECTION[1]));
+                    String mimeType = data.getString(data.getColumnIndex(VIDEO_PROJECTION[2]));
+                    long addTime = data.getLong(data.getColumnIndex(VIDEO_PROJECTION[3]));
+                    long duration = data.getLong(data.getColumnIndex(VIDEO_PROJECTION[4]));
 
+                    //视频小于1s 或者大于20M
+                    if (duration < 1000 || size / (1024 * 1024) > 20) {
+                        continue;
+                    }
+
+                    Media video = new Media();
+                    video.setPath(path);
+                    video.setSize(size);
+                    video.setMimeType(mimeType);
+                    video.setAddTime(addTime);
+                    video.setDuration(duration);
+                    allMedias.add(video);
+                }
+
+                //把视频的文件夹只有一个
+                ImageFolder imageFolder=new ImageFolder();
+                imageFolder.setName("视频");
+                imageFolder.setImages(allMedias);
+                imageFolders.add(imageFolder);
             }
 
             /**
@@ -155,7 +180,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
              * 关闭后即不会再查询
              */
             data.close();
-            mListenter.onLoadFinshed(loadType,imageFolders);
+            mListenter.onLoadFinshed(loadType, imageFolders);
         }
 
 
@@ -169,6 +194,6 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     public interface OnLoadFishedListener {
-        void onLoadFinshed(int loadType,List<ImageFolder> imageFolders);
+        void onLoadFinshed(int loadType, List<ImageFolder> imageFolders);
     }
 }

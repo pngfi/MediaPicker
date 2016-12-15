@@ -23,6 +23,8 @@ import java.util.Locale;
 
 public class MediaHelper {
 
+
+
   public static final int REQUEST_TAKE_PHOTO = 1;
 
   private String mCurrentPhotoPath;

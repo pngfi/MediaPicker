@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +55,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     private TextView mTvTitle;
 
     private TextView mTvPhotoDir;
-    private RelativeLayout mLayoutShowPopupwindow;
+    private RelativeLayout mShowPopupwindow;
     private TextView mTvFinish;
     private RelativeLayout mLayoutPhotoDir;
 
@@ -64,13 +65,14 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
 
     private int loadType;
 
-    public static final String LOAD_TYPE_EXTRA = "load_type_extra";
+
 
     private ArrayList<Media> mSelected = new ArrayList<>();
     private boolean showCamera;
     private int selectLimit;
 
     private MediaHelper mediaHelper;
+    private ImageView ivIndicator;
 
 
     @Override
@@ -79,32 +81,46 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_select_photo);
         initView();
         initData();
+        initEvent();
+    }
 
 
+
+    private void initEvent() {
+        mTvFinish.setOnClickListener(this);
+        mTvBack.setOnClickListener(this);
     }
 
     private void initData() {
-        mTvFinish.setOnClickListener(this);
-        mTvBack.setOnClickListener(this);
         mPhotoGridAdapter = new GridAdapter(this);
+
         mGridView.setAdapter(mPhotoGridAdapter);
-        //mImageFolderAdapter = new ImageFolderAdapter(this, null);
-        mLayoutShowPopupwindow.setOnClickListener(this);
-        loadType = getIntent().getIntExtra(LOAD_TYPE_EXTRA, Scanner.LOAD_TYPE_IMG);
+        //加载类型，图片或者视频
+        loadType = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE, Scanner.LOAD_TYPE_IMG);
+        mPhotoGridAdapter.setLoadType(loadType);
+
         if (loadType == Scanner.LOAD_TYPE_IMG) {
             mTvTitle.setText(R.string.photo);
-        } else {
+            //图片的话要显示popwindow
+            mShowPopupwindow.setOnClickListener(this);
+        } else if (loadType==Scanner.LOAD_TYPE_VIDEO){
             mTvTitle.setText(R.string.video);
+            //隐藏indicator
+            ivIndicator.setVisibility(View.GONE);
         }
-        //参数
+        //选中的
         ArrayList<Media> list = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
         if (list != null) {
             mSelected.addAll(list);
         }
         mPhotoGridAdapter.setSelectedImages(mSelected);
 
+        //选择最大数量限制
         selectLimit = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT, MediaPicker.DEFAULT_SELECT_LIMIT);
+        //是否显示相机
         showCamera = getIntent().getBooleanExtra(MediaPicker.EXTRA_KEY_SHOW_CAMERA, true);
+
+
         mPhotoGridAdapter.setOnSelectedChangeListener(new GridAdapter.OnSelectedChangeListener() {
             @Override
             public void onSelectedChange(CheckBox select, View mask, Media media) {
@@ -264,9 +280,11 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         mTvTitle = (TextView) findViewById(R.id.tv_show_title);
         mGridView = (GridView) findViewById(R.id.gridview);
         mTvPhotoDir = (TextView) findViewById(R.id.tv_photo_dir);
-        mLayoutShowPopupwindow = (RelativeLayout) findViewById(R.id.layout_show_popupwindow);
+        mShowPopupwindow = (RelativeLayout) findViewById(R.id.layout_show_popupwindow);
         mTvFinish = (TextView) findViewById(R.id.tv_finish);
         mLayoutPhotoDir = (RelativeLayout) findViewById(R.id.layout_photo_dir);
+
+        ivIndicator = (ImageView) findViewById(R.id.iv_indicator);
     }
 
 
@@ -282,7 +300,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 if (mFolderPopupWindow.isShowing()) {
                     mFolderPopupWindow.dismiss();
                 } else {
-                    mFolderPopupWindow.showAtLocation(mLayoutShowPopupwindow, Gravity.NO_GRAVITY, 0, 0);
+                    mFolderPopupWindow.showAtLocation(mShowPopupwindow, Gravity.NO_GRAVITY, 0, 0);
                     int index = mImageFolderAdapter.getSelectIndex();
                     mFolderPopupWindow.setSelection(index);
                 }

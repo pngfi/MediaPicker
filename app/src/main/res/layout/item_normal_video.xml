@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_photo"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
-
+    android:layout_height="match_parent">
+    <!--在Adapet中动态设置布局参数-->
     <ImageView
-        android:id="@+id/iv_photo"
+        android:id="@+id/img_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/txt_show_time"
         android:layout_width="match_parent"
         android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@color/video_show_time_color"
-        android:gravity="right"
+        android:gravity="right|center"
         android:paddingRight="8dp"
+        android:text="111"
         android:textColor="@color/text_white"
-        android:visibility="gone"
         android:textSize="12sp" />
 
     <View
-        android:id="@+id/masker"
+        android:id="@+id/photo_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_filter"
+        android:background="@color/photo_selected_color"
         android:visibility="gone" />
 
     <CheckBox

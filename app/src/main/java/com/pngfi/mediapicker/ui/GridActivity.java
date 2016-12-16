@@ -2,6 +2,7 @@ package com.pngfi.mediapicker.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -25,10 +26,10 @@ import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.event.ImagePickerFinishEvent;
 import com.pngfi.mediapicker.utils.MediaHelper;
 import com.pngfi.mediapicker.utils.PermissionHelper;
+import com.pngfi.mediapicker.view.RecordVideoActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     public static final String EXTRA_KEY_CURRENT_FOLDER_LIST = "extra_key_current_folder_list";
 
     public static final int REQUEST_CODE_IMAGE_PREVIEW = 100;
-
 
     public static final String TAG = "GridActivity";
     private GridView mGridView;
@@ -66,7 +66,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     private int loadType;
 
 
-
     private ArrayList<Media> mSelected = new ArrayList<>();
     private boolean showCamera;
     private int selectLimit;
@@ -85,7 +84,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     private void initEvent() {
         mTvFinish.setOnClickListener(this);
         mTvBack.setOnClickListener(this);
@@ -100,11 +98,13 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         mPhotoGridAdapter.setLoadType(loadType);
 
         if (loadType == Scanner.LOAD_TYPE_IMG) {
-            mTvTitle.setText(R.string.photo);
+            mTvTitle.setText(R.string.image);
             //图片的话要显示popwindow
             mShowPopupwindow.setOnClickListener(this);
-        } else if (loadType==Scanner.LOAD_TYPE_VIDEO){
+        } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
             mTvTitle.setText(R.string.video);
+            //目录
+            mTvPhotoDir.setText(R.string.video);
             //隐藏indicator
             ivIndicator.setVisibility(View.GONE);
         }
@@ -119,8 +119,6 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         selectLimit = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT, MediaPicker.DEFAULT_SELECT_LIMIT);
         //是否显示相机
         showCamera = getIntent().getBooleanExtra(MediaPicker.EXTRA_KEY_SHOW_CAMERA, true);
-
-
         mPhotoGridAdapter.setOnSelectedChangeListener(new GridAdapter.OnSelectedChangeListener() {
             @Override
             public void onSelectedChange(CheckBox select, View mask, Media media) {
@@ -150,12 +148,17 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                     mPermissionHelper.requestPermissions(new PermissionHelper.PermissionListener() {
                         @Override
                         public void doAfterGrand(String... permission) {
-                            openCamera();
+                            if (loadType == Scanner.LOAD_TYPE_IMG) {
+                                mediaHelper.takePicture();
+                            } else {
+                                mediaHelper.takeVideo();
+                            }
                         }
+
                         @Override
                         public void doAfterDenied(String... permission) {
                         }
-                    }, Manifest.permission.CAMERA);
+                    }, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
                 } else {
                     Intent intent = new Intent(GridActivity.this, ImagePreviewActivity.class);
                     intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(mImageFolderAdapter.getSelectIndex()).getImages());
@@ -200,6 +203,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
+
     private void changeTvFinish() {
         if (mSelected.size() > 0) {
             mTvFinish.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", selectLimit + ""));
@@ -213,17 +217,9 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private void openCamera() {
-        try {
-            Intent intent = mediaHelper.dispatchTakePictureIntent();
-            startActivityForResult(intent, MediaHelper.REQUEST_TAKE_PHOTO);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == MediaHelper.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             mediaHelper.providerAddMedia();
             //条件分支未处理
@@ -236,13 +232,25 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 mainFolder.setCover(image);
                 mPhotoGridAdapter.notifyDataSetChanged();
             }
+        } else if (requestCode == MediaHelper.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
+            String videoPath=data.getStringExtra(RecordVideoActivity.EXTRA_VIDEO_PATH);
+            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            retriever.setDataSource(videoPath);
+            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            ImageFolder mainFolder = mImageFolders.get(0);
+            Media video = new Media();
+            video.setPath(videoPath);
+            video.setDuration(Long.parseLong(duration));
+            mainFolder.getImages().add(0, video);
+            mPhotoGridAdapter.notifyDataSetChanged();
+
         } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_CANCELED) {
             ArrayList<Media> imageList = data.getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
             mSelected.clear();
             mSelected.addAll(imageList);
             mPhotoGridAdapter.notifyDataSetChanged();
             changeTvFinish();
-        } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_OK ){
+        } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_OK) {
             ArrayList<Media> imageList = data.getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
             EventBus.getDefault().post(new ImagePickerFinishEvent(imageList));
             finish();

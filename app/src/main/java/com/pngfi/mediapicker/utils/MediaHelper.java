@@ -1,5 +1,6 @@
 package com.pngfi.mediapicker.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
@@ -10,6 +11,8 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.pngfi.mediapicker.view.RecordVideoActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,8 @@ public class MediaHelper {
 
 
   public static final int REQUEST_TAKE_PHOTO = 1;
+  public static final int REQUEST_TAKE_VIDEO=2;
+
 
   private String mCurrentPhotoPath;
   private Context mContext;
@@ -34,7 +39,7 @@ public class MediaHelper {
     this.mContext = context;
   }
 
-  private File createImageFile() throws IOException {
+  private File createImageFile() {
     // Create an image file name
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
     String imageFileName = "JPEG_" + timeStamp + ".jpg";
@@ -43,7 +48,6 @@ public class MediaHelper {
     if (!storageDir.exists()) {
       if (!storageDir.mkdir()) {
         Log.e("TAG", "Throwing Errors....");
-        throw new IOException();
       }
     }
 
@@ -55,7 +59,8 @@ public class MediaHelper {
   }
 
 
-  public Intent dispatchTakePictureIntent() throws IOException {
+  public void takePicture()  {
+
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     // Ensure that there's a camera activity to handle the intent
     if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
@@ -65,13 +70,20 @@ public class MediaHelper {
 
         photoFile = Uri.fromFile(file);
 
-
       // Continue only if the File was successfully created
       if (photoFile != null) {
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoFile);
       }
     }
-    return takePictureIntent;
+
+
+    ((Activity)mContext).startActivityForResult(takePictureIntent, MediaHelper.REQUEST_TAKE_PHOTO);
+  }
+
+
+  public void takeVideo(){
+    Intent intent=new Intent(mContext, RecordVideoActivity.class);
+    ((Activity)mContext).startActivityForResult(intent,REQUEST_TAKE_VIDEO);
   }
 
 

@@ -1,57 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    android:layout_height="match_parent">
 
-  <SurfaceView
-      android:id="@+id/surface_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-  />
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:background="#44000000"
-      android:paddingLeft="12dp"
-      android:paddingRight="12dp"
-  >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#44000000"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
 
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:textColor="@android:color/white"
-        android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
 
-    <ImageView
-        android:id="@+id/iv_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/switch_camera"
-        android:visibility="invisible"
-    />
-  </RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/switch_camera"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="100dp"
-      android:layout_alignParentBottom="true"
-      android:background="#44000000"
-  >
-    <ImageView
-        android:id="@+id/iv_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/start_record"
-    />
-  </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="#44000000">
+
+        <ImageView
+            android:id="@+id/iv_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/start_record" />
+    </RelativeLayout>
 
 
 </RelativeLayout>

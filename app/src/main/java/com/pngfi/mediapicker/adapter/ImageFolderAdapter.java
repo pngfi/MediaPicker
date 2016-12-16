@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.engine.ImageLoader;
 import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.entity.ImageFolder;
 
@@ -63,7 +62,7 @@ public class ImageFolderAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.item_photo_dir, parent, false);
+            convertView = mInflater.inflate(R.layout.item_image_folder, parent, false);
             holder = new ViewHolder(convertView);
         } else {
             holder = (ViewHolder) convertView.getTag();

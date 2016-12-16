@@ -6,7 +6,7 @@
     <string formatted="false" name="btn_select_img_number">完成(%s/%s)</string>
     <string formatted="false" name="btn_select_video_number">(%s)</string>
 
-    <string name="photo">照片</string>
+    <string name="image">图片</string>
     <string name="video">视频</string>
     <string name="image_exceed_limit_prompt">图片不能超过%s张</string>
 

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.view.ViewGroup;
 
 import com.pngfi.mediapicker.entity.ImageFolder;
 import com.pngfi.mediapicker.entity.Media;
@@ -137,7 +138,7 @@ public class Scanner implements LoaderManager.LoaderCallbacks<Cursor> {
 
                 //构造所有图片的集合
                 ImageFolder allImagesFolder = new ImageFolder();
-                allImagesFolder.setName("所有图片");
+                allImagesFolder.setName("图片");
                 allImagesFolder.setPath("/");
                 allImagesFolder.setCover(allMedias.get(0));
                 allImagesFolder.setImages(allMedias);

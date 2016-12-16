@@ -37,7 +37,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:text="@string/photo"
+                android:text="@string/image"
                 android:textColor="@color/btn_yellow_text_color_selected"
                 android:textSize="14sp" />
 

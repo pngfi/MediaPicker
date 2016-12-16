@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
 
     <application
@@ -24,10 +24,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.GridActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
         <activity android:name=".ui.ImagePreviewActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/ImagePreviewStyle"/>
+        <activity android:name=".view.RecordVideoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
     </application>
 
 </manifest>

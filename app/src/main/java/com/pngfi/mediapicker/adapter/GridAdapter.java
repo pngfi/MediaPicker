@@ -141,7 +141,7 @@ public class GridAdapter extends BaseAdapter {
         } else {
             final ViewHolder holder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.item_normal_image, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.item_normal, parent, false);
                 //让图片是个正方形
                 convertView.setLayoutParams(new AbsListView.LayoutParams(mImageSize, mImageSize));
                 holder = new ViewHolder(convertView);

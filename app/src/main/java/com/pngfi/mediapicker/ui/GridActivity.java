@@ -154,15 +154,17 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                                 mediaHelper.takeVideo();
                             }
                         }
-
                         @Override
                         public void doAfterDenied(String... permission) {
                         }
                     }, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
                 } else {
                     Intent intent = new Intent(GridActivity.this, ImagePreviewActivity.class);
-                    intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(mImageFolderAdapter.getSelectIndex()).getImages());
+
+                    intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(loadType==Scanner.LOAD_TYPE_IMG?mImageFolderAdapter.getSelectIndex():0).getImages());
                     intent.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
+                    intent.putExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT,selectLimit);
+                    intent.putExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE,loadType);
                     int curPositon = mPhotoGridAdapter.showCamera() ? position - 1 : position;
                     intent.putExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION, curPositon);
                     startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
@@ -233,8 +235,8 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 mPhotoGridAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == MediaHelper.REQUEST_TAKE_VIDEO && resultCode == RESULT_OK) {
-            String videoPath=data.getStringExtra(RecordVideoActivity.EXTRA_VIDEO_PATH);
-            MediaMetadataRetriever retriever=new MediaMetadataRetriever();
+            String videoPath = data.getStringExtra(RecordVideoActivity.EXTRA_VIDEO_PATH);
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(videoPath);
             String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
             ImageFolder mainFolder = mImageFolders.get(0);
@@ -319,11 +321,9 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 break;
 
             case R.id.tv_finish:
-                Intent intent = new Intent();
                 if (loadType == Scanner.LOAD_TYPE_IMG) {
                     EventBus.getDefault().post(new ImagePickerFinishEvent(mSelected));
                     finish();
-                    setResult(Scanner.LOAD_TYPE_IMG, intent);
                 } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
                    /* intent.putExtra(MediaPicker.EXTRA_RESULT_ITEMS,mediaPicker.getSelectedImages());
                     setResult(Scanner.LOAD_TYPE_VIDEO,intent);*/

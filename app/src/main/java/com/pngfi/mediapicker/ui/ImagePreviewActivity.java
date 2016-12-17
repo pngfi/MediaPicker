@@ -15,9 +15,10 @@ import android.widget.Toast;
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.ImagePageAdapter;
 import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.Media;
-import com.pngfi.mediapicker.utils.SystemBarTintManager;
 import com.pngfi.mediapicker.utils.ScreenUtil;
+import com.pngfi.mediapicker.utils.SystemBarTintManager;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,9 @@ public class ImagePreviewActivity extends BaseActivity {
 
 
     private int mCurrentPosition;//当前第几张图片
+    private int selectLimit;
+
+    private int type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +66,7 @@ public class ImagePreviewActivity extends BaseActivity {
         topBar = findViewById(R.id.layout_top_bar);
         bottomBar = findViewById(R.id.bottom_bar);
         root = findViewById(R.id.root);
-        tvFinish= (TextView) findViewById(R.id.tv_finish);
+        tvFinish = (TextView) findViewById(R.id.tv_finish);
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setStatusBarTintResource(R.color.colorPrimaryDark);  //设置上方状态栏的颜色*/
@@ -79,14 +83,17 @@ public class ImagePreviewActivity extends BaseActivity {
     private void initData() {
         mSelected = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
         mImageList = getIntent().getParcelableArrayListExtra(GridActivity.EXTRA_KEY_CURRENT_FOLDER_LIST);
-        mCurrentPosition=getIntent().getIntExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION,0);
-
+        mCurrentPosition = getIntent().getIntExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION, 0);
+        selectLimit = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT,MediaPicker.DEFAULT_SELECT_LIMIT);
+        type=getIntent().getIntExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE, Scanner.LOAD_TYPE_IMG);
 
         ImagePageAdapter imagePageAdapter = new ImagePageAdapter(this, mImageList);
+        imagePageAdapter.setType(type);
         mViewPager.setAdapter(imagePageAdapter);
 
+
         //当前的图片无法触发onPageSelected
-        if (mSelected.contains(mImageList.get(mCurrentPosition))){
+        if (mSelected.contains(mImageList.get(mCurrentPosition))) {
             cbSelect.setChecked(true);
         }
 
@@ -98,7 +105,7 @@ public class ImagePreviewActivity extends BaseActivity {
                 } else {
                     cbSelect.setChecked(false);
                 }
-                mCurrentPosition=position;
+                mCurrentPosition = position;
             }
         });
 
@@ -139,16 +146,15 @@ public class ImagePreviewActivity extends BaseActivity {
             public void onClick(View v) {
                 boolean checked = cbSelect.isChecked();
                 Media image = mImageList.get(mCurrentPosition);
-                if (checked){
+                if (checked) {
                     //这里要修改，记得改
-                    if (mSelected.size()>=9){
+                    if (mSelected.size() >= 9) {
                         cbSelect.setChecked(false);
-                        Toast.makeText(mContext,getString(R.string.image_exceed_limit_prompt,9+""),Toast.LENGTH_LONG).show();
-                    }
-                    else {
+                        Toast.makeText(mContext, getString(R.string.image_exceed_limit_prompt, selectLimit+ ""), Toast.LENGTH_LONG).show();
+                    } else {
                         mSelected.add(image);
                     }
-                }else {
+                } else {
                     mSelected.remove(image);
                 }
 
@@ -159,17 +165,17 @@ public class ImagePreviewActivity extends BaseActivity {
         tvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent data=new Intent();
-                data.putExtra(MediaPicker.EXTRA_KEY_SELECTED,mSelected);
-                setResult(RESULT_OK,data);
+                Intent data = new Intent();
+                data.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
+                setResult(RESULT_OK, data);
                 finish();
             }
         });
-        mViewPager.setCurrentItem(mCurrentPosition,false);
+        mViewPager.setCurrentItem(mCurrentPosition, false);
     }
 
 
-    private void changeTvFinish(){
+    private void changeTvFinish() {
         //这里硬编码了
         if (mSelected.size() > 0) {
             tvFinish.setText(getString(R.string.btn_select_img_number, mSelected.size() + "", 9 + ""));
@@ -185,15 +191,14 @@ public class ImagePreviewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         back();
     }
 
 
-    private void back(){
-        Intent data=new Intent();
-        data.putExtra(MediaPicker.EXTRA_KEY_SELECTED,mSelected);
-        setResult(RESULT_CANCELED,data);
+    private void back() {
+        Intent data = new Intent();
+        data.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
+        setResult(RESULT_CANCELED, data);
         finish();
     }
 

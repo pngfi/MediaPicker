@@ -14,11 +14,14 @@ import android.widget.Toast;
 
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.ImagePageAdapter;
-import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.Media;
+import com.pngfi.mediapicker.event.PickerFinishEvent;
 import com.pngfi.mediapicker.utils.ScreenUtil;
 import com.pngfi.mediapicker.utils.SystemBarTintManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -27,7 +30,7 @@ import java.util.ArrayList;
  * Created by pngfi on 2016/12/13.
  */
 
-public class ImagePreviewActivity extends BaseActivity {
+public class PreviewActivity extends BaseActivity{
 
     private ViewPager mViewPager;
     private CheckBox cbSelect;
@@ -48,6 +51,7 @@ public class ImagePreviewActivity extends BaseActivity {
     private int selectLimit;
 
     private int type;
+    private boolean preview=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,12 +81,19 @@ public class ImagePreviewActivity extends BaseActivity {
             params.topMargin = ScreenUtil.getStatusHeight(this);
             topBar.setLayoutParams(params);
         }
+
     }
 
 
     private void initData() {
         mSelected = getIntent().getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
         mImageList = getIntent().getParcelableArrayListExtra(GridActivity.EXTRA_KEY_CURRENT_FOLDER_LIST);
+        if (mImageList==null){
+            //此时认为是preview()
+            preview=true;
+            mImageList=new ArrayList<>();
+            mImageList.addAll(mSelected);
+        }
         mCurrentPosition = getIntent().getIntExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION, 0);
         selectLimit = getIntent().getIntExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT,MediaPicker.DEFAULT_SELECT_LIMIT);
         type=getIntent().getIntExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE, Scanner.LOAD_TYPE_IMG);
@@ -148,9 +159,10 @@ public class ImagePreviewActivity extends BaseActivity {
                 Media image = mImageList.get(mCurrentPosition);
                 if (checked) {
                     //这里要修改，记得改
-                    if (mSelected.size() >= 9) {
+                    if (mSelected.size() >= selectLimit) {
                         cbSelect.setChecked(false);
-                        Toast.makeText(mContext, getString(R.string.image_exceed_limit_prompt, selectLimit+ ""), Toast.LENGTH_LONG).show();
+                        String toast = type == Scanner.LOAD_TYPE_IMG ? getString(R.string.image_exceed_limit_prompt, selectLimit) : getString(R.string.video_exceed_limit_prompt, selectLimit);
+                        Toast.makeText(mContext,toast, Toast.LENGTH_LONG).show();
                     } else {
                         mSelected.add(image);
                     }
@@ -165,14 +177,21 @@ public class ImagePreviewActivity extends BaseActivity {
         tvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent data = new Intent();
-                data.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
-                setResult(RESULT_OK, data);
+                if (preview){
+                    EventBus.getDefault().post(new PickerFinishEvent(mSelected));
+                }else {
+                    Intent data = new Intent();
+                    data.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
+                    setResult(RESULT_OK, data);
+                }
                 finish();
+
             }
         });
         mViewPager.setCurrentItem(mCurrentPosition, false);
     }
+
+
 
 
     private void changeTvFinish() {
@@ -201,6 +220,7 @@ public class ImagePreviewActivity extends BaseActivity {
         setResult(RESULT_CANCELED, data);
         finish();
     }
+
 
 }
 

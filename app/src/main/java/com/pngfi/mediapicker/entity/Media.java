@@ -16,9 +16,7 @@ public class Media implements Parcelable{
     private long addTime;//创建时间
 
     /**
-     * 这个字段没有采用继承的原因：
-     * java泛型的檫除在复用类的时候会产生很多问题，
-     * 采用一种省事的办法
+     * 这个字段没有采用继承的原因：省事
      */
     private long duration;//视频的时长
 

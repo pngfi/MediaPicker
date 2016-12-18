@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-        <activity android:name=".ui.ImagePreviewActivity"
+        <activity android:name=".ui.PreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ImagePreviewStyle"/>
         <activity android:name=".view.RecordVideoActivity"

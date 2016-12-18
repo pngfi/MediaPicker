@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;

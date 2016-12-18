@@ -2,26 +2,27 @@ package com.pngfi.mediapicker.event;
 
 import com.pngfi.mediapicker.entity.Media;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by pngfi on 2016/12/15.
  */
 
-public class ImagePickerFinishEvent {
+public class PickerFinishEvent {
 
-    private List<Media> list;
+    private ArrayList<Media> list;
 
-    public List<Media> getList() {
+    public ArrayList<Media> getList() {
         return list;
     }
 
-    public void setList(List<Media> list) {
+    public void setList(ArrayList<Media> list) {
         this.list = list;
     }
 
 
-    public ImagePickerFinishEvent(List<Media> list) {
+    public PickerFinishEvent(ArrayList<Media> list) {
         this.list = list;
     }
 }

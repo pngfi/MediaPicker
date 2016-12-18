@@ -21,4 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="视频" />
+
+    <Button
+        android:id="@+id/btn_preview_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="图片预览" />
+
+
 </LinearLayout>

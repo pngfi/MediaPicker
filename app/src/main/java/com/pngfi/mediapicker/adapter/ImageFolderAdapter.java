@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.MediaPicker;
 import com.pngfi.mediapicker.entity.ImageFolder;
 
 

@@ -1,24 +1,18 @@
 package com.pngfi.mediapicker.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.pngfi.mediapicker.R;
-import com.pngfi.mediapicker.engine.ImageLoader;
-import com.pngfi.mediapicker.engine.MediaPicker;
+import com.pngfi.mediapicker.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.Media;
 import com.pngfi.mediapicker.utils.ScreenUtil;

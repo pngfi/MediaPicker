@@ -8,7 +8,6 @@
 
     <string name="image">图片</string>
     <string name="video">视频</string>
-    <string name="image_exceed_limit_prompt">图片不能超过%s张</string>
 
 
 
@@ -19,5 +18,13 @@
     <string name="no_camera">您的设备没有摄像头，无法使用此功能</string>
     <string name="choose_current_video">录制完成，选择当前视频？</string>
     <string name="record_video_error">录制视频出错,请重试</string>
+
+   <!-- toast-->
+    <string name="image_exceed_limit_prompt">图片不能超过%d张~</string>
+    <string name="video_exceed_limit_prompt">视频不能超过%d个~</string>
+    <string name="no_image">你的手机没有图片~</string>
+    <string name="no_video">你的手机没有符合要求的视频,请录制~</string>
+
+
 
 </resources>

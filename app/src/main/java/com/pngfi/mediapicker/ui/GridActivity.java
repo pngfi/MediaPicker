@@ -16,14 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pngfi.mediapicker.MediaPicker;
 import com.pngfi.mediapicker.R;
 import com.pngfi.mediapicker.adapter.GridAdapter;
 import com.pngfi.mediapicker.adapter.ImageFolderAdapter;
-import com.pngfi.mediapicker.engine.MediaPicker;
 import com.pngfi.mediapicker.engine.Scanner;
 import com.pngfi.mediapicker.entity.ImageFolder;
 import com.pngfi.mediapicker.entity.Media;
-import com.pngfi.mediapicker.event.ImagePickerFinishEvent;
+import com.pngfi.mediapicker.event.PickerFinishEvent;
 import com.pngfi.mediapicker.utils.MediaHelper;
 import com.pngfi.mediapicker.utils.PermissionHelper;
 import com.pngfi.mediapicker.view.RecordVideoActivity;
@@ -125,7 +125,8 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 boolean checked = select.isChecked();
                 if (checked) {
                     if (mSelected.size() >= selectLimit) {
-                        Toast.makeText(GridActivity.this, "图片不能大于" + selectLimit + "张", Toast.LENGTH_SHORT).show();
+                        String toast = loadType == Scanner.LOAD_TYPE_IMG ? getString(R.string.image_exceed_limit_prompt, selectLimit) : getString(R.string.video_exceed_limit_prompt, selectLimit);
+                        Toast.makeText(GridActivity.this, toast, Toast.LENGTH_SHORT).show();
                         select.setChecked(false);
                     } else {
                         mask.setVisibility(View.VISIBLE);
@@ -154,17 +155,18 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                                 mediaHelper.takeVideo();
                             }
                         }
+
                         @Override
                         public void doAfterDenied(String... permission) {
                         }
                     }, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO);
                 } else {
-                    Intent intent = new Intent(GridActivity.this, ImagePreviewActivity.class);
+                    Intent intent = new Intent(GridActivity.this, PreviewActivity.class);
 
-                    intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(loadType==Scanner.LOAD_TYPE_IMG?mImageFolderAdapter.getSelectIndex():0).getImages());
+                    intent.putExtra(EXTRA_KEY_CURRENT_FOLDER_LIST, mImageFolders.get(loadType == Scanner.LOAD_TYPE_IMG ? mImageFolderAdapter.getSelectIndex() : 0).getImages());
                     intent.putExtra(MediaPicker.EXTRA_KEY_SELECTED, mSelected);
-                    intent.putExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT,selectLimit);
-                    intent.putExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE,loadType);
+                    intent.putExtra(MediaPicker.EXTRA_KEY_SELECT_LIMIT, selectLimit);
+                    intent.putExtra(MediaPicker.EXTRA_KEY_LOAD_TYPE, loadType);
                     int curPositon = mPhotoGridAdapter.showCamera() ? position - 1 : position;
                     intent.putExtra(MediaPicker.EXTRAK_KEY_CURRENT_POSITION, curPositon);
                     startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW);
@@ -182,14 +184,16 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void onLoadFinshed(int loadType, List<ImageFolder> imageFolders) {
                         mImageFolders = imageFolders;
+                        String toast = null;
                         if (loadType == Scanner.LOAD_TYPE_IMG) {
                             mImageFolderAdapter = new ImageFolderAdapter(GridActivity.this, mImageFolders);
+                            toast = getString(R.string.no_image);
                         } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
-
+                            toast = getString(R.string.no_video);
                         }
                         if (imageFolders.size() == 0) {
                             mPhotoGridAdapter.refreshData(null);
-                            Toast.makeText(GridActivity.this, "你的手机没有图片", Toast.LENGTH_LONG).show();
+                            Toast.makeText(GridActivity.this, toast, Toast.LENGTH_LONG).show();
                             return;
                         }
                         mPhotoGridAdapter.refreshData(imageFolders.get(0).getImages());
@@ -254,7 +258,7 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
             changeTvFinish();
         } else if (requestCode == REQUEST_CODE_IMAGE_PREVIEW && resultCode == RESULT_OK) {
             ArrayList<Media> imageList = data.getParcelableArrayListExtra(MediaPicker.EXTRA_KEY_SELECTED);
-            EventBus.getDefault().post(new ImagePickerFinishEvent(imageList));
+            EventBus.getDefault().post(new PickerFinishEvent(imageList));
             finish();
         }
     }
@@ -321,13 +325,8 @@ public class GridActivity extends BaseActivity implements View.OnClickListener {
                 break;
 
             case R.id.tv_finish:
-                if (loadType == Scanner.LOAD_TYPE_IMG) {
-                    EventBus.getDefault().post(new ImagePickerFinishEvent(mSelected));
-                    finish();
-                } else if (loadType == Scanner.LOAD_TYPE_VIDEO) {
-                   /* intent.putExtra(MediaPicker.EXTRA_RESULT_ITEMS,mediaPicker.getSelectedImages());
-                    setResult(Scanner.LOAD_TYPE_VIDEO,intent);*/
-                }
+                EventBus.getDefault().post(new PickerFinishEvent(mSelected));
+                finish();
                 finish();
                 break;
         }
